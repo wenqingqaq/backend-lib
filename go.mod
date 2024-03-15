@@ -1,4 +1,4 @@
-module backend-lib
+module github.com/wenqingqaq/backend-lib
 
 go 1.19
 
