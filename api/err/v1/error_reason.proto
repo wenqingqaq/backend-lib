@@ -1,0 +1,254 @@
+syntax = "proto3";
+
+package api.err.v1;
+
+import "errors/errors.proto";
+
+option go_package = "gitee.com/yanwenqing/backend-lib/api/err/v1;v1";
+
+enum ErrorReason {
+  // Default code
+  option (errors.default_code) = 500;
+  // -------------------------------------------------通用--------------------------------------------------
+
+  DB_ERROR = 0; // 数据库错误
+  RDS_ERROR = 1; // 缓存错误
+  INVALID_PARAMS = 2[(errors.code) = 400]; // 参数错误
+  THIRD_PARTY_SERVICE_ERR = 3; // 第三方服务错误
+  UNKNOWN = 4; // 服务器内部错误/未知错误
+  FILE_NOT_FOUND = 5[(errors.code) = 404]; // 文件找不到
+  FILE_OPERATE_ERROR = 6[(errors.code) = 400]; // 文件类操作失败，如新建、删除、移动等
+  MQ_ERROR = 7; // 消息队列错误
+  ASYNQ_ERROR = 8; // 任务系统错误
+  KUBERNETES_OPERATOR_ERROR = 9[(errors.code) = 400];// k8s error
+  RPC_ERROR = 10[(errors.code) = 400];// call rpc error
+
+  // 身份认证
+  AUTH_INVALID_CLIENT_ID = 11 [(errors.code) = 400]; // 无效的应用ID
+  AUTH_MISSING_RANGE = 20 [(errors.code) = 401]; // 未提供Range
+  AUTH_MISSING_JWT_TOKEN = 21 [(errors.code) = 401]; // 未提供Token
+  AUTH_MISSING_KEY_FUNC = 22 [(errors.code) = 401];
+  AUTH_TOKEN_INVALID = 23 [(errors.code) = 401]; // 无效Token
+  AUTH_TOKEN_EXPIRED = 24 [(errors.code) = 401]; // Token已过期
+  AUTH_TOKEN_PARSE_FAIL = 25 [(errors.code) = 401]; // Token解析失败
+  AUTH_MISSING_TECO_CLAIMS = 26 [(errors.code) = 401]; // 未提供Teco_claims
+  AUTH_INVALID_TENANT_ID = 27 [(errors.code) = 400]; // 租户ID无效
+  AUTH_INVALID_WORKSPACE_ID = 28 [(errors.code) = 400]; // 工作空间ID无效
+  AUTH_INVALID_PROJECT_ID = 29 [(errors.code) = 400]; // 项目ID无效
+
+  // 个人中心
+  PERSONAL_INCORRECT_OLD_PASSWORD = 1101 [(errors.code) = 400]; // 旧密码错误
+  PERSONAL_INVALID_NEW_PASSWORD = 1102 [(errors.code) = 400]; // 新密码格式错误
+  PERSONAL_SAME_AS_ORIGINAL_PASSWORD = 1103 [(errors.code) = 400]; // 新密码不能与原密码相同
+  PERSONAL_MODIFY_PASSWORD_FAILED = 1104 [(errors.code) = 400]; // 修改密码失败
+  PERSONAL_INVALID_OP_CODE = 1201 [(errors.code) = 400]; // 操作码错误
+  PERSONAL_INCORRECT_VERIFICATION_CODE = 1202 [(errors.code) = 400]; // 验证码错误
+  PERSONAL_INVALID_USERNAME = 1203 [(errors.code) = 400]; // 新用户名格式错误
+  PERSONAL_MODIFY_USERNAME_FAILED = 1204; // 修改用户名失败
+  PERSONAL_SEND_EMAIL_FAILED = 1205; // 发送验证码失败
+  PERSONAL_EMAIL_EXISTS = 1206 [(errors.code) = 400]; // 邮箱已存在
+  PERSONAL_USERNAME_EXISTS = 1207 [(errors.code) = 400]; // 用户名已存在
+
+  // ---------------------------------------------算力管理平台相关---------------------------------------------
+
+  // 管理台用户管理
+  USER_DELETE_USER_FAILED = 1301; // 删除用户失败
+  USER_INVALID_USER_ID = 1302 [(errors.code) = 400]; // 无效的用户ID
+
+
+  // 管理台-租户管理
+  TENANT_NAME_EXISTS = 1501 [(errors.code) = 400]; // 租户名已存在
+  TENANT_EXCEED_MAX = 1502 [(errors.code) = 400]; // 超过上限(100个)
+  TENANT_INVALID_SUPER_ADMIN_ID = 1503 [(errors.code) = 400]; // 无效的管理员ID
+  TENANT_INVALID_NAME = 1504 [(errors.code) = 400]; // 租户名格式错误
+  TENANT_NOT_ALLOWED_TO_DELETE = 1505 [(errors.code) = 400]; // 此租户下还有未删除的工作空间，请全部删除后再进行删除
+
+  // 配额
+  QUOTA_LESS_THEN_OCCUPIED = 1601 [(errors.code) = 400]; // 小于当前已用配额
+  QUOTA_EXCEED_PARENT = 1602 [(errors.code) = 400]; // 超过上级配额
+  QUOTA_INVALID_UNIT = 1603 [(errors.code) = 400]; // 无效的配额单位
+  QUOTA_INVALID_TYPE = 1604 [(errors.code) = 400]; // 无效的配额类型
+  QUOTA_DUPLICATED_TYPE = 1605 [(errors.code) = 400]; // 存在重复条目(同一类型出现多次)
+  QUOTA_EXCEED_LIMIT = 1606 [(errors.code) = 400]; // 超过可分配上限
+  QUOTA_NOT_FOUND = 1607 [(errors.code) = 400]; // 配额项不存在/未设置配额
+  QUOTA_CAN_NOT_RELEASE = 1608 [(errors.code) = 403]; // 无法释放配额(整机分配模式无法释放配额)
+  QUOTA_INVALID_MODE = 1609 [(errors.code) = 400]; // 无效的配额模式(工作空间配额模式必须与租户一致)
+  QUOTA_NODE_HAS_BEEN_ASSIGNED = 1610 [(errors.code) = 400]; // 节点已占用
+  QUOTA_NODE_IS_BUSY = 1611 [(errors.code) = 400]; // 该节点上有正在运行实例，请检查并停止后才可以释放此节点
+  QUOTA_NODE_NON_EXCLUSIVE = 1612 [(errors.code) = 400]; // 非独享节点
+  QUOTA_NODE_DOES_NOT_BELONG_TO_TENANT = 1613 [(errors.code) = 400]; // 非当前租户节点
+
+  // 多租户插件
+  PLUGIN_INIT_FAILED = 1701; // 插件初始化失败
+
+
+  // 事件监控
+  EVENT_RULE_NAME = 1001 [(errors.code) = 400]; // 事件监控规则名称不能为空
+  EVENT_RULE_PRODUCT = 1002 [(errors.code) = 400]; // 事件监控产品模块不能为空
+  EVENT_RULE_CONTACTS = 1003 [(errors.code) = 400]; // 事件监控联系人信息不能为空
+  EVENT_RULE_CHANNEL = 1004 [(errors.code) = 400]; // 事件监控发送消息通道类型不能为空
+  EVENT_RULE_EVENT_ID_INVALID = 1012 [(errors.code) = 400]; // 事件规则-事件名称无效
+  EVENT_RULE_EVENT_LEVEL_INVALID = 1013 [(errors.code) = 400]; // 上报事件-事件等级无效
+  EVENT_RULE_ID = 1005 [(errors.code) = 400]; // 事件监控规则ID不能为空
+  EVENT_RULE_STATE = 1006 [(errors.code) = 400]; // 事件监控规则状态不能为空
+  EVENT_LEVEL = 1007 [(errors.code) = 400]; // 事件监控事件等级不能为空
+
+  EVENT_CONTENT_INVALID = 1008 [(errors.code) = 400]; // 事件监控上报事件内容不能为空
+  EVENT_TYPE_INVALID = 1009 [(errors.code) = 400]; // 上报事件-事件类型值无效
+  EVENT_RULE_REPEAT = 1011  [(errors.code) = 400]; // 事件规则-创建事件用户下规则名称重复
+  EVENT_RIDS_INVALID = 1014 [(errors.code) = 400]; // 联系人为空
+  EVENT_MONITOR_DELETE = 1015 [(errors.code) = 400]; // 事件监控数据删除失败
+  EVENT_NAME = 1016  [(errors.code) = 400]; // 创建自定义事件规则时事件名称为空
+
+  // 操作记录
+  OPERATOR_PLANT_GROUP_INVALID = 1010 [(errors.code) = 400]; // 事件平台分组的值无效
+  OPERATOR_SUB_GROUP_INVALID = 1020 [(errors.code) = 400]; // 事件模块分组的值无效
+  OPERATOR_TYPE_INVALID = 1030 [(errors.code) = 400]; // 事件操作类型的值无效
+  OPERATOR_TENANT_ID_EMPTY = 1040 [(errors.code) = 400]; // 租户id不能为空
+  OPERATOR_CREATOR_ID_EMPTY = 1050 [(errors.code) = 400]; // 创建者id不能为空
+
+  // 集群管理
+  CLUSTER_NAME_INVALID = 1800 [(errors.code) = 400];// 集群名称错误
+  ROUTE_ID_EMPTY = 1801 [(errors.code) = 400];// routeId不能为空
+
+  // 集群概览
+  NODE_NAME_NOT_FOUND = 1901  [(errors.code) = 400]; // 节点名称错误
+
+  // ---------------------------------------------AI开放平台相关---------------------------------------------
+  //密钥管理ineffect
+
+  SSH_SECRET_CREAT_SSH_SECRET_PARAMS_ERROR = 2301[(errors.code) = 400];//创建参数不对
+  SSH_SECRET_CREAT_SSH_SECRET_TYPE_ERROR = 2302 [(errors.code) = 400];//创建类型错误
+  SSH_SECRET_CREAT_SSH_SECRET_NICKNAME_ERROR = 2303[(errors.code) = 400];//密钥名称已存在
+  SSH_SECRET_CREAT_SSH_SECRET_MAX_NUM_ERROR = 2304 [(errors.code) = 400];//创建密钥最多为10条
+  SSH_SECRET_GET_SSH_SECRET_LIST_PAGING_ERROR = 2306 [(errors.code) = 400];//分页错误
+  SSH_SECRET_CHECK_GET_SSH_SECRET_KEY_ERROR = 2307 [(errors.code) = 400];//没查询到有效的secretKey的信息
+  SSH_SECRET_INVALID_SSH_SECRET_KEY_ERROR = 2308 [(errors.code) = 400]; //当前为非生效状态
+  SSH_SECRET_KEY_NOT_EXIST_OR_EXPIRED_ERROR = 2309 [(errors.code) = 400];//该条密钥记录不存在或者已过期
+  SSH_SECRET_KEY_STATUS_DISABLED_ERROR = 2310 [(errors.code) = 400];//当前状态已经是禁用中
+  SSH_SECRET_KEY_STATUS_IN_EFFECT_ERROR = 2311 [(errors.code) = 400];//当前状态已经是生效中
+  SSH_SECRET_KEY_NOT_EXIST_ERROR = 2312 [(errors.code) = 409];//该条密钥记录不存在
+  SSH_SECRET_KEY_EXPIRED_TIME_ERROR = 2313 [(errors.code) = 400];//过期时间不正确
+  SSH_SECRET_KEY_NOT_EXIST_OR_DISABLED_ERROR = 2314 [(errors.code) = 400];//该条密钥记录不存在或者是禁用状态
+  SSH_SECRET_KEY_ALREADY_CONFIG_ERROR = 2315 [(errors.code) = 409];//密钥已经配置过该实例
+  SSH_SECRET_INJECT_SSH_SECRET_KEY_NOT_EXIST_ERROR = 2316 [(errors.code) = 400];//密钥不存在
+  SSH_SECRET_INVALID_EXPIRED_TIME_ERROR = 2317[(errors.code) = 400];//过期时间参数不正确
+  SSH_SECRET_USER_INFO_ERROR = 2318[(errors.code) = 400];//解析用户信息错误
+  SSH_SECRET_DOWNLOAD_SECRET_ERROR = 2319[(errors.code) = 400];//下载私钥失败
+
+  // AccessKey
+  AK_SK_MAX_NUM_ERROR = 2320[(errors.code) = 400];  // AccessKey已达到上限！
+  AK_SK_PARAMS_ERROR = 2321[(errors.code) = 400]; // 参数错误
+  //自定义建模
+  NOTEBOOK_DISPLAY_NAME_EXISTED = 2401 [(errors.code) = 409];  //实例名已存在
+  NOTEBOOK_CREATE_NOTEBOOK = 2402 [(errors.code) = 400];    //创建实例错误
+  NOTEBOOK_GET_NOTEBOOK = 2403 [(errors.code) = 400]; //获取实例信息错误
+  NOTEBOOK_UPDATE_NOTEBOOK = 2404 [(errors.code) = 400]; //更新实例配置信息错误
+  NOTEBOOK_GET_LIST_NOTEBOOK = 2405 [(errors.code) = 400]; //获取自定建模列表信息错误
+  NOTEBOOK_PATCH_NOTEBOOK = 2406 [(errors.code) = 400]; //启动/停止实例错误
+  NOTEBOOK_SAVE_IMAGE = 2407 [(errors.code) = 400];//保存镜像失败
+  NOTEBOOK_INJECT_SSH_SECRET = 2408 [(errors.code) = 400];//配置ssh错误
+  NOTEBOOK_LIST_NOTEBOOK_OUTPUT_FILES = 2409 [(errors.code) = 400];//获取模型文件失败
+  NOTEBOOK_SAVE_MODEL_FILES = 2410 [(errors.code) = 400]; //模型保存失败
+  NOTEBOOK_LIST_ALL_NOTEBOOK_OUTPUT_FILES = 2411 [(errors.code) = 400];//获取模型列表失败
+  NOTEBOOK_DELETE_NOTEBOOK = 2412 [(errors.code) = 400]; //删除实例
+  NOTEBOOK_CHECK_QUOTAS = 2413[(errors.code) = 400]; //检查配额错误
+  NOTEBOOK_NOT_FOUNT = 2414[(errors.code) = 400]; //实例不存在
+  NOTEBOOK_DELETE_BATCH_NOTEBOOK = 2415 [(errors.code) = 400]; //批量删除实例
+  NOTEBOOK_PATCH_BATCH_NOTEBOOK = 2416 [(errors.code) = 400]; //批量启动/停止实例错误
+  NOTEBOOK_OPTIMIZE_DEBUG = 2417 [(errors.code) = 400]; //批量启动/停止实例错误
+  NOTEBOOK_DELETE_NOTEBOOK_COLLECTION = 2418 [(errors.code) = 400]; //删除环境失败
+  NOTEBOOK_HEADER_ANALYSIS = 2419 [(errors.code) = 400]; //解析错误
+  // 主界面
+  TENANT_INVALID_INVITE_CODE = 2501 [(errors.code) = 400]; // 无效的邀请码
+  TENANT_USER_NOT_IN_TENANT = 2502 [(errors.code) = 400]; // 用户未加入该租户
+  TENANT_ALREADY_IN_TENANT = 2503 [(errors.code) = 400]; // 用户已加入该租户
+
+  // 工作空间
+  WORKSPACE_NAME_EXISTS = 2701 [(errors.code) = 400]; // 工作空间名已存在
+  WORKSPACE_EXCEED_MAX = 2702 [(errors.code) = 400]; // 该租户工作空间数量超过上限(20个)
+  WORKSPACE_NOT_NORMAL_USER = 2703 [(errors.code) = 400]; // 不是普通用户
+  WORKSPACE_INVALID_NAME = 2704 [(errors.code) = 400]; // 工作空间名格式错误
+  WORKSPACE_INVALID_TENANT_ID = 2705 [(errors.code) = 400]; // 租户ID有误
+  WORKSPACE_NOT_ALLOWED_TO_DELETE = 2706 [(errors.code) = 400]; // 此工作空间中还有未删除的项目，请全部删除后再进行删除
+
+  // 项目
+  PROJECT_NAME_EXISTS = 2801 [(errors.code) = 400]; // 项目名已存在
+  PROJECT_EXCEED_MAX = 2802 [(errors.code) = 400]; // 该工作空间项目数量超过上限(20个)
+  PROJECT_INVALID_NAME = 2803 [(errors.code) = 400]; // 项目名格式错误
+  PROJECT_NOT_ALLOWED_TO_DELETE = 2804 [(errors.code) = 400]; // 此项目中有运行状态的实例，请处理后再进行删除
+
+
+  // ---------------------------------------------算法生态中心相关---------------------------------------------
+  // 应用管理
+  APP_WORKFLOW_NAME_EXISTS = 2601 [(errors.code) = 400]; // 工作流名称重复
+  APP_INVALID_TRAINING_WORKFLOW_ID = 2602 [(errors.code) = 400]; // 无效的训练工作流ID
+  APP_CANNOT_INFERENCE = 2603 [(errors.code) = 400]; // 无法推理(前置条件不满足)
+  APP_INSUFFICIENT_QUOTAS = 2604 [(errors.code) = 400]; // 可用配额不足
+
+  // 镜像管理
+  IMAGE_LABEL_EXISTS = 2901 [(errors.code) = 400]; // 标签已存在
+  IMAGE_INVALID_ARTIFACT_ID = 2902 [(errors.code) = 400]; // 无效的镜像ID
+  IMAGE_INVALID_AUTHOR = 2903 [(errors.code) = 400]; // 无效的镜像的作者
+  IMAGE_STATE_IS_UPLOAD = 2904 [(errors.code) = 400]; // 上传中的状态不可删除
+  IMAGE_INVALID_ARTIFACT_NAME = 2905 [(errors.code) = 400]; // 无效的镜像名称
+
+  // 数据集
+  DATASET_NAME_IS_NULL = 3002[(errors.code) = 400]; //数据集名称不能为空
+  DATASET_BAD_EXTENSION = 3003[(errors.code) = 400]; // 仅支持.tar .zip .rar .tar.gz文件格式
+  DATASET_NAME_EXISTS = 3004[(errors.code) = 400]; // 数据集名称已存在
+  DATASET_VERSION_EXISTS = 3005[(errors.code) = 400]; // 版本名称已存在
+  DATASET_VERSION_DIR_IS_NIL = 3006[(errors.code) = 400];//版本目录为空
+  DATASET_NOT_FOUNT = 3007[(errors.code) = 404];// 数据集未找到
+  DATASET_VERSION_CAN_NOT_DELETE = 3008[(errors.code) = 400];//数据集版本不能删除
+
+
+
+  // 模型
+  MODEL_NOT_FOUND = 3101[(errors.code) = 404]; // 模型未找到
+  MODEL_NAME_EXISTS = 3102[(errors.code) = 400]; // 模型名称已存在
+  MODEL_VERSION_EXISTS = 3103[(errors.code) = 400]; // 版本名称已存在
+  MODEL_VERSION_NOT_FOUND = 3104[(errors.code) = 400]; // 模型版本未找到
+  MODEL_BAD_EXTENSION = 3105[(errors.code) = 400]; // 仅支持.pt .pth .pkl .ckpt .tar .pth.tar .pdparams .pdopt .pdmodel .index .meta .pb .h5 .pbtxt .zip .rar文件格式
+
+  // 公共数据服务
+  DATA_MANAGE_INVALID_RANGE_HEADER = 3201[(errors.code) = 400];//请求头中的Range不合法
+
+  // 推理服务
+  INFERENCE_NAME_EXISTS = 3301[(errors.code) = 400]; // 推理服务名称已存在
+  INFERENCE_NOT_FOUNT = 3302[(errors.code) = 404];// 推理服务未找到
+
+  // 存储管理
+  BUCKET_NOT_FOUND = 3401[(errors.code) = 404]; // bucket未找到
+  BUCKET_NOT_AUTH = 3402[(errors.code) = 400]; // bucket未授权
+  BUCKET_DIRECTORY_INVALID = 3403[(errors.code) = 400]; // 目录不符合规范
+  BUCKET_DIRECTORY_EXISTS = 3404[(errors.code) = 400];// 已存在同名目录
+  BUCKET_NAME_EXISTS = 3405[(errors.code) = 400];// 存储桶名称已存在
+
+  //分布式训练
+  TRAIN_DISPLAY_NAME_EXISTED = 3501 [(errors.code) = 409];  //实例名已存在
+  TRAIN_CREATE_EXPERIMENT = 3502 [(errors.code) = 400];    //创建实验错误
+  TRAIN_GET_EXPERIMENT = 3503 [(errors.code) = 400]; //获取实验信息错误
+  TRAIN_UPDATE_EXPERIMENT = 3504 [(errors.code) = 400]; //更新实验信息错误
+  TRAIN_GET_LIST_EXPERIMENT = 3505 [(errors.code) = 400]; //获取实验列表信息错误
+  TRAIN_PATCH_EXPERIMENT = 3506 [(errors.code) = 400]; //停止实验错误
+  TRAIN_LIST_TRAIN_OUTPUT_FILES = 3507 [(errors.code) = 400];//获取模型文件失败
+  TRAIN_SAVE_MODEL_FILES = 3508 [(errors.code) = 400]; //模型保存失败
+  TRAIN_LIST_ALL_TRAIN_OUTPUT_FILES = 3509 [(errors.code) = 400];//获取模型列表失败
+  TRAIN_DELETE_EXPERIMENT = 3510 [(errors.code) = 400]; //删除实验失败
+  TRAIN_CHECK_QUOTAS = 3511[(errors.code) = 400]; //检查配额错误
+  TRAIN_NOT_FOUNT = 3512[(errors.code) = 400]; //训练不存在
+  TRAIN_HEADER_ANALYSIS = 3513 [(errors.code) = 400]; //解析错误
+  TRAIN_CREATE_EXPERIMENT_COLLECTION = 3514 [(errors.code) = 400]; //创事实验集合错误
+  TRAIN_PATCH_TENSORBOARD = 3515 [(errors.code) = 400]; // 启动/停止可视化工具错误
+  TRAIN_ADD_SSH_SECRET = 3516 [(errors.code) = 400];//配置ssh错误
+
+
+  // OpenAPI
+  OPENAPI_AUTH_INVALID = 4001 [(errors.code) = 400]; // 无效签名
+  OPENAPI_TRAINING_GPU_ANALYSIS = 4002   [(errors.code) = 400]; //gpu解析错误
+  OPENAPI_TRAINING_GET_EC = 4003  [(errors.code) = 400]; //获取实验集合错误
+  OPENAPI_TRAINING_CREATE_EC = 4004   [(errors.code) = 400]; //创建实验集合错误
+  OPENAPI_TRAINING_CREATE_EXPERIMENT = 4005   [(errors.code) = 400]; //创建实验错误
+  OPENAPI_TRAINING_GET_EXPERIMENT = 4006  [(errors.code) = 400]; //获取实验错误2
+}
