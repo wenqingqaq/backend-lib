@@ -1,4 +1,4 @@
-module gitee.com/yanwenqing/backend-lib
+module backend-lib
 
 go 1.19
 
