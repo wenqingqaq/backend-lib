@@ -28,9 +28,9 @@ type DigitalProduceMsgData struct {
 }
 
 type ProduceResultMsg struct {
-	Source           uint8               `json:"source"` // 服务来源类型 1-事件监控系统 2-监控告警系统 3-....
-	Data             *ProduceCallbackMsg // 发送消息信息
-	SourceCreateTime time.Time           // 消息创建时间
+	Source           uint8              `json:"source"` // 服务来源类型 1-事件监控系统 2-监控告警系统 3-....
+	Data             ProduceCallbackMsg // 发送消息信息
+	SourceCreateTime time.Time          // 消息创建时间
 }
 type ProduceCallbackMsg struct {
 	StoryboardId        int32  `json:"storyboard_id"`
