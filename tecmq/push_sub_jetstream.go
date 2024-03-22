@@ -122,19 +122,11 @@ func (n *NatJs) JsQueueSub(subject, queue, consumer string, f func(msgC *MqMsg))
 		return nil, errors.New("js conn is nil")
 	}
 
-	if queue != "" {
-		sub, err := n.JsCtx.Subscribe(subject, HandlerFucAndAck(f), nats.OrderedConsumer()) // nats.ManualAck()
-		if err != nil {
-			return nil, err
-		}
-		return &MqSub{Sub: sub}, nil
-	} else {
-		sub, err := n.JsCtx.QueueSubscribe(subject, queue, HandlerFucAndAck(f), nats.Durable(consumer)) // nats.ManualAck()
-		if err != nil {
-			return nil, err
-		}
-		return &MqSub{Sub: sub}, nil
+	sub, err := n.JsCtx.QueueSubscribe(subject, queue, HandlerFucAndAck(f), nats.Durable(consumer)) // nats.ManualAck()
+	if err != nil {
+		return nil, err
 	}
+	return &MqSub{Sub: sub}, nil
 }
 
 func (n *NatJs) JsQueueSubSync(subject, queue string) (*MqSub, error) {
@@ -142,17 +134,9 @@ func (n *NatJs) JsQueueSubSync(subject, queue string) (*MqSub, error) {
 		return nil, errors.New("js conn is nil")
 	}
 
-	if queue != "" {
-		sub, err := n.JsCtx.SubscribeSync(subject, nats.OrderedConsumer()) // nats.ManualAck()
-		if err != nil {
-			return nil, err
-		}
-		return &MqSub{Sub: sub}, nil
-	} else {
-		sub, err := n.JsCtx.QueueSubscribeSync(subject, queue, nats.OrderedConsumer())
-		if err != nil {
-			return nil, err
-		}
-		return &MqSub{Sub: sub}, nil
+	sub, err := n.JsCtx.QueueSubscribeSync(subject, queue, nats.OrderedConsumer())
+	if err != nil {
+		return nil, err
 	}
+	return &MqSub{Sub: sub}, nil
 }
