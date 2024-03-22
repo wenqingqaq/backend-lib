@@ -33,11 +33,11 @@ type ProduceResultMsg struct {
 	SourceCreateTime time.Time           // 消息创建时间
 }
 type ProduceCallbackMsg struct {
-	StoryboardId        int32
-	StoryboardSectionId int32 `json:"storyboard_section_id"`
-	OutFile             string
-	IsSuccess           int32
-	Duration            string
+	StoryboardId        int32  `json:"storyboard_id"`
+	StoryboardSectionId int32  `json:"storyboard_section_id"`
+	OutFile             string `json:"out_file"`
+	IsSuccess           int32  `json:"is_success"`
+	Duration            string `json:"duration"`
 }
 
 // PushProduceMessage to ProduceServer 发送生产视频的消息
