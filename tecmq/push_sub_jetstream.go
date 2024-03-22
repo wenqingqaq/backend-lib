@@ -123,9 +123,9 @@ func (n *NatJs) JsQueueSub(subject, queue, consumer string, f func(msgC *MqMsg))
 	}
 
 	// MaxDeliver 消息最大投递次数目前没有限制；
-	// nats.ManualAck() 消息需要确切的ack才认为是正确消费的
+	// nats.ManualAck() 消息需要确切的ack才认为是正确消费的 nats.MaxDeliver(3)
 	sub, err := n.JsCtx.QueueSubscribe(subject, queue, HandlerFucAndAck(f),
-		nats.Durable(consumer), nats.ManualAck(), nats.MaxDeliver(3),
+		nats.Durable(consumer), nats.ManualAck(),
 	)
 	if err != nil {
 		return nil, err
