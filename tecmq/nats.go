@@ -39,6 +39,7 @@ func NatsJsClient(url string, jsName string, subjects []string) (*nats.Conn, nat
 		cfg := nats.StreamConfig{
 			Name:     jsName,
 			Subjects: subjects,
+			MaxMsgs:  10000, // 单个主题最大消息1w
 		}
 		cfg.Storage = nats.FileStorage
 		_, err = js.AddStream(&cfg)
