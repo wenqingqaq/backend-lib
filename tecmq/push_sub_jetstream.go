@@ -122,7 +122,7 @@ func (n *NatJs) JsQueueSub(subject, queue, consumer string, f func(msgC *MqMsg))
 		return nil, errors.New("js conn is nil")
 	}
 
-	sub, err := n.JsCtx.QueueSubscribe(subject, queue, HandlerFucAndAck(f), nats.Durable(consumer)) // nats.ManualAck()
+	sub, err := n.JsCtx.QueueSubscribe(subject, queue, HandlerFucAndAck(f), nats.Durable(consumer), nats.ManualAck()) // nats.ManualAck()
 	if err != nil {
 		return nil, err
 	}
