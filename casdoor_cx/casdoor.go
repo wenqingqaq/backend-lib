@@ -133,6 +133,7 @@ const (
 var (
 	ErrMissingJwtToken = errors.Unauthorized(reason, "JWT token is missing")
 	ErrTokenInvalid    = errors.Unauthorized(reason, "Token is invalid")
+	ErrTokenInvalid2   = errors.Unauthorized(reason, "22222 is invalid")
 	ErrTokenClaim      = errors.Unauthorized(reason, "Token claim error")
 	ErrWrongContext    = errors.Unauthorized(reason, "Wrong context for middleware")
 )
@@ -151,8 +152,11 @@ func (c *CasDoorClient) CasDoorJWT() middleware.Middleware {
 				if jwtToken == "" {
 					return nil, ErrTokenInvalid
 				}
-				fmt.Println("token = ", jwtToken)
-				fmt.Println(c.Client.AuthConfig)
+				user, err := c.Client.GetUser("wenqing")
+				if jwtToken == "" {
+					return nil, ErrTokenInvalid2
+				}
+				fmt.Println(user)
 				claim, err := c.Client.ParseJwtToken(jwtToken)
 				if err != nil {
 					return nil, ErrTokenClaim
