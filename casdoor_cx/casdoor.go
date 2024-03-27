@@ -115,8 +115,6 @@ func (c *CasDoorClient) CasDoorJWT() middleware.Middleware {
 		return func(ctx context.Context, req interface{}) (interface{}, error) {
 			if header, ok := transport.FromServerContext(ctx); ok {
 				auths := strings.SplitN(header.RequestHeader().Get(authorizationKey), " ", 2)
-				fmt.Println("auths --- ")
-				fmt.Println(auths)
 				if len(auths) != 2 || !strings.EqualFold(auths[0], bearerWord) {
 					return nil, ErrMissingJwtToken
 				}
@@ -124,6 +122,8 @@ func (c *CasDoorClient) CasDoorJWT() middleware.Middleware {
 				if jwtToken == "" {
 					return nil, ErrTokenInvalid
 				}
+				fmt.Println("token = ", jwtToken)
+				fmt.Println(c.Client.AuthConfig)
 				claim, err := c.Client.ParseJwtToken(jwtToken)
 				if err != nil {
 					return nil, ErrTokenClaim
