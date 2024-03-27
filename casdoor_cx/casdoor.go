@@ -160,7 +160,9 @@ func (c *CasDoorClient) CasDoorJWT() middleware.Middleware {
 				if err != nil {
 					return nil, err
 				}
+				fmt.Println("11111")
 				ctx = context.WithValue(ctx, AuthKey{}, claim)
+				fmt.Println("2222")
 				return handler(ctx, req)
 			}
 
