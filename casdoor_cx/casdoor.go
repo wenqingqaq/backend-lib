@@ -152,14 +152,9 @@ func (c *CasDoorClient) CasDoorJWT() middleware.Middleware {
 				if jwtToken == "" {
 					return nil, ErrTokenInvalid
 				}
-				user, err := c.Client.GetUser("wenqing")
-				if jwtToken == "" {
-					return nil, ErrTokenInvalid2
-				}
-				fmt.Println(user)
 				claim, err := c.Client.ParseJwtToken(jwtToken)
 				if err != nil {
-					return nil, ErrTokenClaim
+					return nil, err
 				}
 				ctx = context.WithValue(ctx, AuthKey{}, claim)
 				return handler(ctx, req)
