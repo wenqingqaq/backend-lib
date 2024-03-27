@@ -140,6 +140,10 @@ var (
 
 type AuthKey struct{}
 
+func (c *CasDoorClient) CasDoorAuthKey() AuthKey {
+	return AuthKey{}
+}
+
 func (c *CasDoorClient) CasDoorJWT() middleware.Middleware {
 	return func(handler middleware.Handler) middleware.Handler {
 		return func(ctx context.Context, req interface{}) (interface{}, error) {
@@ -153,16 +157,10 @@ func (c *CasDoorClient) CasDoorJWT() middleware.Middleware {
 					return nil, ErrTokenInvalid
 				}
 				claim, err := c.Client.ParseJwtToken(jwtToken)
-				fmt.Println("-------")
-				fmt.Println(err)
-				fmt.Println(claim)
-				fmt.Println("-------")
 				if err != nil {
 					return nil, err
 				}
-				fmt.Println("11111")
 				ctx = context.WithValue(ctx, AuthKey{}, claim)
-				fmt.Println("2222")
 				return handler(ctx, req)
 			}
 
