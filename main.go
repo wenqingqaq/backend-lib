@@ -28,7 +28,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(claims.Name)
+	fmt.Println("user = ", claims.Name, " id = ", claims.ID)
 	fmt.Println(user.Name)
 	fmt.Println(user.Permissions)
 	for _, item := range user.Permissions {
