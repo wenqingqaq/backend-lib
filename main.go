@@ -10,7 +10,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	code := "6de29cd2ec8344f6ee00"
+	code := "2e3173c89fced828cd92"
 	state := "casdoor"
 	token := client.GetOAuthToken(code, state)
 
