@@ -140,9 +140,7 @@ var (
 
 type AuthKey struct{}
 
-func (c *CasDoorClient) CasDoorAuthKey() AuthKey {
-	return AuthKey{}
-}
+type Claims casdoorsdk.Claims
 
 func (c *CasDoorClient) CasDoorJWT() middleware.Middleware {
 	return func(handler middleware.Handler) middleware.Handler {
@@ -172,7 +170,7 @@ func (c *CasDoorClient) CasDoorJWT() middleware.Middleware {
 func (c *CasDoorClient) CustomerJWT() middleware.Middleware {
 	return func(handler middleware.Handler) middleware.Handler {
 		return func(ctx context.Context, req interface{}) (interface{}, error) {
-			claims, ok := ctx.Value(AuthKey{}).(casdoorsdk.Claims)
+			claims, ok := ctx.Value(AuthKey{}).(Claims)
 			fmt.Println(claims, ok)
 			if !ok {
 				// 没有获取到 claims
