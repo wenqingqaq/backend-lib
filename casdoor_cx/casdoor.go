@@ -153,6 +153,10 @@ func (c *CasDoorClient) CasDoorJWT() middleware.Middleware {
 					return nil, ErrTokenInvalid
 				}
 				claim, err := c.Client.ParseJwtToken(jwtToken)
+				fmt.Println("-------")
+				fmt.Println(err)
+				fmt.Println(claim)
+				fmt.Println("-------")
 				if err != nil {
 					return nil, err
 				}
