@@ -158,7 +158,8 @@ func (c *CasDoorClient) CasDoorJWT() middleware.Middleware {
 				if err != nil {
 					return nil, err
 				}
-				ctx = context.WithValue(ctx, AuthKey{}, claim)
+				claimB := Claims(claim) // 类型转换一下
+				ctx = context.WithValue(ctx, AuthKey{}, claimB)
 				return handler(ctx, req)
 			} else {
 				return nil, ErrTokenInvalid2
