@@ -160,9 +160,9 @@ func (c *CasDoorClient) CasDoorJWT() middleware.Middleware {
 				}
 				ctx = context.WithValue(ctx, "user", claim)
 				return handler(ctx, req)
+			} else {
+				return nil, ErrTokenInvalid2
 			}
-
-			return nil, ErrWrongContext
 		}
 	}
 }
