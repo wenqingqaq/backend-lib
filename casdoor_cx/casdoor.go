@@ -8,6 +8,7 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/transport"
 	"golang.org/x/oauth2"
+	"os"
 	"strings"
 )
 
@@ -21,59 +22,22 @@ type CasDoorClientConfig struct {
 	ApplicationName  string
 }
 
-func NewCasDoorClientConfig() (*casdoorsdk.Client, error) {
-	clientConfig := CasDoorClientConfig{
-		Endpoint:         "http://localhost:8100",
-		ClientId:         "6be1ec496f3173e35509",
-		ClientSecret:     "a587bba2075f864dc393a07ace30524f246159f6",
-		Certificate:      "",
-		OrganizationName: "built-in",
-		ApplicationName:  "云平台",
-		CertificateName:  "cert-built-in",
-	}
-
+func NewCasDoorClientConfig(clientConfig *CasDoorClientConfig) (*casdoorsdk.Client, error) {
 	// 加载一下本地的证书文件
-	//raw, err := os.ReadFile("./certs/" + clientConfig.CertificateName + ".pem")
-	//if err != nil {
-	//	return nil, err
-	//}
-	//if len(raw) > 0 {
-	//	clientConfig.Certificate = string(raw)
-	//}
-
-	clientConfig.Certificate = `-----BEGIN CERTIFICATE-----
-MIIE3TCCAsWgAwIBAgIDAeJAMA0GCSqGSIb3DQEBCwUAMCgxDjAMBgNVBAoTBWFk
-bWluMRYwFAYDVQQDEw1jZXJ0LWJ1aWx0LWluMB4XDTI0MDMyNzAxMzI0OFoXDTQ0
-MDMyNzAxMzI0OFowKDEOMAwGA1UEChMFYWRtaW4xFjAUBgNVBAMTDWNlcnQtYnVp
-bHQtaW4wggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQDxwskU0x4nGcp9
-w+A4iVzZNx6Imv41HmlGewF9o5Kt7/InhZV3JFPlekVBaoGLfRpbPuVo3gEKevPW
-T9Fc1AyKcy2Q7+rERtxsY/THhoyK9KAfm6WO30RTc5lAJA4IHQG/0YJTwC1I8Hwi
-Ar3xeN3zqMt5bG5ifcXY2NpIJMRtKNBrSaaJkeIMn/fAUT5DtrwxOKdc8BfVgKOm
-40lOtwwxkCjeyDN6chEnpU+NOoskXGjdlsSBA3vz+DB3vOppBlRPiars59loVZMc
-ayCpSpe4tkt8dnThmQtmD37TE3I0RdWW40FG3R7AfovIqH+0Hi7OYtyRX2zBXIB2
-UOk8CYDtjImAW5SM0CovKLiJE85Q+wscZBbDN/fV7AujHl2UXNcICgEnGOXT1/SH
-i7hUqM7x7BzWRDu6bNFVExSJPNlJ3yzqXfbFnCKrk55eb9hwYe4ZO4/iR2qV0Ivw
-tqECIBgLQcFYBWVGXUPH046aedTg+jIepebZLzmw6ETXeWgHPNNfE1yeL6vadNrn
-TLgRCgaoyxhvJSkxyWTV9GDI42sYV5ZOxZE7LZcXCLBIRSo0a8OyIsQAJDvPZUee
-jReC6bS221GFL1GkLmkEWuZk2IeQSmFObiunaqG3wFVFPL4iukiqrfiFmR2Kuyf2
-XWQS2Eq2yW0z6n88HoKt1wXLPObicwIDAQABoxAwDjAMBgNVHRMBAf8EAjAAMA0G
-CSqGSIb3DQEBCwUAA4ICAQDvejeCdADX6kyFf19kQgdMharQsNGbYnlv/5QlMV/l
-u9m2T+ODCQkehJKgA3idUOqdOxWuvbS5720PJRgM2V4OMKly2ZQYPqGPb1yMGna5
-96mZwXhaIDlRBtOO7mFfe0xpNUlN00ucDvkybIiCp8b9GABeGaCSLMfDwZjcxA8F
-ucrGY+oMuBsRm0uG8gVUMGRkhwYq5CjSUVTtuB4mo5z+csA96FFjyMMngUppW7sh
-wBBfLpJvvrB0rvm60o0mRLTbSuTVodcCcGaO8WHgJOWwpe797nF7/eWaSGv3S0tu
-AgCYgBtC2pRQZzx0pdwZ8swtUzOnMZZ7QX1L5VKfG3rYgWj0C29weRBSBD/6A27D
-xiS6qiwf4DUD+7L2m1Ckf6yKwiJkCfz2RVIzBS5zb/+5h+WrPkHqXKTQKIKQgCEQ
-hAzOaUNWjrz2acvmkhKyfvNI0exChce+bSwOOvj6QEowBYhLMYSUw+WBYQSLgQxQ
-YzsNjPIZF+UgwRVcxA7OwgwB/vEOkoba8SS3pZLQ587jQEnNWcKdaGmjblLOB2Ex
-7vfd1goNj5xrKaz10OFSrSvtKvdnGR3pof6Dzu7VD5qkf+8gg8mENriPEbK+mm1I
-d+9A3Nmvf/NKu62pVcX8k8CqPuxmKMXmhtJWh4b9DFXdHr1bgo5hxKBEVLTuMI6q
-uA==
------END CERTIFICATE-----`
+	if clientConfig.CertificateName != "" && clientConfig.Certificate == "" {
+		raw, err := os.ReadFile("./certs/" + clientConfig.CertificateName + ".pem")
+		if err != nil {
+			return nil, err
+		}
+		if len(raw) > 0 {
+			clientConfig.Certificate = string(raw)
+		}
+	}
 
 	client := casdoorsdk.NewClient(clientConfig.Endpoint, clientConfig.ClientId, clientConfig.ClientSecret, clientConfig.Certificate,
 		clientConfig.OrganizationName, clientConfig.ApplicationName)
 
+	// 远程的证书
 	if client.Certificate == "" {
 		certs, err := client.GetCerts()
 		if err != nil {
@@ -96,8 +60,8 @@ type CasDoorClient struct {
 	Client *casdoorsdk.Client
 }
 
-func NewCasDoorClient() (*CasDoorClient, error) {
-	client, err := NewCasDoorClientConfig()
+func NewCasDoorClient(clientConfig *CasDoorClientConfig) (*CasDoorClient, error) {
+	client, err := NewCasDoorClientConfig(clientConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +74,6 @@ func (c *CasDoorClient) GetOAuthToken(code, state string) *oauth2.Token {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(token.AccessToken)
 
 	return token
 }
