@@ -140,7 +140,7 @@ var (
 
 type AuthKey struct{}
 
-type Claims casdoorsdk.Claims
+type Claims *casdoorsdk.Claims
 
 func (c *CasDoorClient) CasDoorJWT() middleware.Middleware {
 	return func(handler middleware.Handler) middleware.Handler {
@@ -158,7 +158,7 @@ func (c *CasDoorClient) CasDoorJWT() middleware.Middleware {
 				if err != nil {
 					return nil, err
 				}
-				ctx = context.WithValue(ctx, "user", claim)
+				ctx = context.WithValue(ctx, AuthKey{}, claim)
 				return handler(ctx, req)
 			} else {
 				return nil, ErrTokenInvalid2
